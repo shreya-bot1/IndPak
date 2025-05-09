@@ -52,7 +52,7 @@ def forward_request():
         return jsonify({"error": str(e)}), 500
 
 
-
+@app.route("/ping")
 def ping():
     global ngrok_link 
     status_message = "IndPak link - Online\n"
