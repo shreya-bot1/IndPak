@@ -43,10 +43,10 @@ def forward_request():
             "User-Agent": "CustomUserAgent"  # Ensures bypass
         }
         response = requests.post(f"{ngrok_link}/query", json=data,headers=headers)
-        if response.status_code == 200 and response.text.strip():
-            return jsonify(response.json()), response.status_code
-        else:
-            return jsonify({"error": "Error Try Again", "status_code": response.status_code}), response.status_code
+        # if response.status_code == 200 and response.text.strip():
+        #     return jsonify(response.json()), response.status_code
+        # else:
+        #     return jsonify({"error": "Error Try Again", "status_code": response.status_code}), response.status_code
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
