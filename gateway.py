@@ -29,7 +29,7 @@ def receive_link():
 @app.route("/", methods=["GET"])
 def home():
     print("******NORMAL PAGE OPENED******")
-    return jsonify({"message": "Shreya Bot Running!!"}), 200
+    return jsonify({"message": "IndPak Running!!"}), 200
 
 @app.route("/api", methods=["POST"])
 def forward_request():
@@ -55,7 +55,7 @@ def forward_request():
 
 def ping():
     global ngrok_link 
-    status_message = "Shreya Bot link - Online\n"
+    status_message = "IndPak link - Online\n"
     api_url = f"{ngrok_link}/ping" if ngrok_link else None
     api_status = "Offline"
 
@@ -67,14 +67,14 @@ def ping():
         except requests.exceptions.RequestException:
             api_status = "Offline"
 
-    status_message += f"Shreya Bot API - {api_status}"
+    status_message += f"IndPak API - {api_status}"
 
     return status_message, 200
 @app.route("/change_link")
 def clink():
     api_url = f"{ngrok_link}/change_link" if ngrok_link else None
     requests.get(api_url)
-    return jsonify({"message": f"Shreya Bot Rrunning at {ngrok_link}"}), 200
+    return jsonify({"message": f"IndPak Rrunning at {ngrok_link}"}), 200
 
 
 @app.route("/whatislink")
@@ -83,7 +83,7 @@ def wil():
 def keep_alive():
     while True:
         try:
-            requests.get("https://shreyabotapi.onrender.com")
+            requests.get("https://indpak.onrender.com")
             print("Ping sent!")
         except Exception as e:
             print(f"Ping failed: {e}")
