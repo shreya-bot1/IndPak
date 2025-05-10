@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, session, jsonify
-
+from urllib.parse import urlparse
 import requests
 import threading
 import time
@@ -58,11 +58,19 @@ def forward_request():
 def forward_via_path(link):
     try:
         print("******PATH RECEIVED******", link)
+        
+        # Prepend https:// if not present
         full_link = link if link.startswith("http") else f"https://{link}"
+        
+        # Parse and remove query parameters
+        parsed_url = urlparse(full_link)
+        cleaned_link = f"{parsed_url.scheme}://{parsed_url.netloc}{parsed_url.path}"
+
+        print("******CLEANED LINK******", cleaned_link)
 
         response = requests.post(
             f"{ngrok_link}/query",
-            json={"text": full_link},
+            json={"text": cleaned_link},
             headers={
                 "ngrok-skip-browser-warning": "true",
                 "Content-Type": "application/json"
@@ -73,7 +81,6 @@ def forward_via_path(link):
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
-
 
 @app.route("/ping")
 def ping():
