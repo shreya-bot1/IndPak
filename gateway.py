@@ -35,18 +35,41 @@ def home():
 def forward_request():
     try:
         data = request.get_json()
-        if not data:
-            return jsonify({"error": "Invalid input"}), 400
-        print("******DATA RECIEVED******", data)
-        headers = {
-            "ngrok-skip-browser-warning": "true",
-            "User-Agent": "CustomUserAgent"  # Ensures bypass
-        }
-        response = requests.post(f"{ngrok_link}/query", json=data,headers=headers)
-        # if response.status_code == 200 and response.text.strip():
-        #     return jsonify(response.json()), response.status_code
-        # else:
-        #     return jsonify({"error": "Error Try Again", "status_code": response.status_code}), response.status_code
+        if not data or "text" not in data:
+            return jsonify({"error": "Missing 'text' field"}), 400
+
+        print("******DATA RECEIVED******", data)
+
+        response = requests.post(
+            f"{ngrok_link}/query",
+            json={"text": data["text"]},
+            headers={
+                "ngrok-skip-browser-warning": "true",
+                "Content-Type": "application/json"
+            }
+        )
+
+        return (response.text, response.status_code, response.headers.items())
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+@app.route("/a/<path:link>", methods=["GET"])
+def forward_via_path(link):
+    try:
+        print("******PATH RECEIVED******", link)
+        full_link = link if link.startswith("http") else f"https://{link}"
+
+        response = requests.post(
+            f"{ngrok_link}/query",
+            json={"text": full_link},
+            headers={
+                "ngrok-skip-browser-warning": "true",
+                "Content-Type": "application/json"
+            }
+        )
+
+        return (response.text, response.status_code, response.headers.items())
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
